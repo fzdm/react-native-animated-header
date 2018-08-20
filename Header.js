@@ -6,7 +6,7 @@ const {width, height} = Dimensions.get('window');
 // from native-base
 const isIphoneX = ios && (height === 812 || width === 812);
 const iphoneXTopInset = 24;
-const initToolbarHeight = ios ? 46 : 56;
+const initToolbarHeight = ios ? 56 : 66;
 
 const paddingTop = ios ? 18 : 0;
 const topInset =  isIphoneX ? iphoneXTopInset : 0;
@@ -92,7 +92,7 @@ export default class Header extends React.PureComponent {
     const { scrollOffset } = this.state;
     return this.props.imageSource ? scrollOffset.interpolate({
       inputRange: [0, this.headerHeight - toolbarHeight],
-      outputRange: [1, 0],
+      outputRange: [1, this.props.headerOpacity],
       extrapolate: 'clamp',
     }) : 0
   }
@@ -124,7 +124,7 @@ export default class Header extends React.PureComponent {
           />}
           <View style={styles.toolbarContainer}>
             <View style={styles.statusBar} />
-            <View style={styles.toolbar}>
+            <View style={[styles.toolbar,this.props.toolbarStyle]}>
               {this.props.renderLeft && this.props.renderLeft()}
               <TouchableOpacity disabled={!onBackPress} onPress={onBackPress} activeOpacity={0.8} style={[styles.titleButton, backStyle]} onLayout={this.onBackLayout}>
                 <Animated.Text style={[backTextStyle, { alignSelf: 'center', opacity: opacity }]}>{this.props.backText || 'Back2'}</Animated.Text>
@@ -181,7 +181,9 @@ Header.defaultProps = {
   backStyle: { marginLeft: 10 },
   backTextStyle: { fontSize: 16 },
   titleStyle: { fontSize: 20, left: 40, bottom: 30 },
+  toolbarStyle:{},
   toolbarColor: '#FFF',
+  headerOpacity: 0,
   headerMaxHeight: 200,
   disabled: false,
   imageSource: undefined,
